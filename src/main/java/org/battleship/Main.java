@@ -29,7 +29,7 @@ public class Main {
         int boatLength = 0;
 
         if (!firstCoordinate[0].equals(endCoordinate[0]) && !firstCoordinate[1].equals(endCoordinate[1])) {
-            System.out.println("Error: Ship must be placed on x or y axis.");
+            System.out.println("Error: Ship must be placed on x or y axis or coordinates are out of board.");
         } else {
             // x or y
             if (firstCoordinate[0].equals(endCoordinate[0])) {

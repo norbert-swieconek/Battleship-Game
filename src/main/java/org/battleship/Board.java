@@ -4,12 +4,15 @@ import java.util.Arrays;
 
 public class Board {
     private char[][] grid;
+    private final int BOARD_SIZE = 10;
+    private final char FOG_OF_WAR = '*';
+    private final char CELL_OF_SHIP = 'O';
 
     // filling grid with '~' chars
     public Board () {
-        this.grid = new char[10][10];
+        this.grid = new char[BOARD_SIZE][BOARD_SIZE];
         for (char[] chars : grid) {
-            Arrays.fill(chars, '~');
+            Arrays.fill(chars, FOG_OF_WAR);
         }
     }
 
@@ -17,8 +20,8 @@ public class Board {
     public void displayBoard() {
         // printing number of column from 1 to 10
         System.out.print("  ");
-        for (int i = 1; i < 11; i++) {
-            System.out.print(i + " ");
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            System.out.print(i + 1 + " ");
         }
         System.out.println();
 
@@ -36,6 +39,6 @@ public class Board {
 
     // setting ship
     public void setGrid(int row, int column) {
-        grid[row][column] = 'O';
+        grid[row][column] = CELL_OF_SHIP;
     }
 }
