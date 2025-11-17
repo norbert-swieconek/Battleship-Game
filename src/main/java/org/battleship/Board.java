@@ -33,4 +33,9 @@ public class Board {
             System.out.println();
         }
     }
+
+    // setting ship
+    public void setGrid(int row, int column) {
+        grid[row][column] = 'O';
+    }
 }
