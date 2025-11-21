@@ -8,6 +8,10 @@ public class Main {
         Board board = new Board();
         board.displayBoard();
 
+        // switch (isOn)
+        // for
+
+
         // TODO what if input is: asgsagsaf for example?
         System.out.println("Enter the coordinates of the ship:");
         // x1, x2
