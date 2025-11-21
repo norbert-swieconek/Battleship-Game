@@ -8,52 +8,68 @@ public class Main {
         Board board = new Board();
         board.displayBoard();
 
+        // TODO what if input is: asgsagsaf for example?
         System.out.println("Enter the coordinates of the ship:");
         // x1, x2
-        String[] coordinates = sc.nextLine().split(" ");
+        String[] coordinates = sc.nextLine().toUpperCase().split(" ");
         String firstCoordinateX;
         String firstCoordinateY;
         String endCoordinateX;
         String endCoordinateY;
 
-        // TODO what if the input is single?
-        int compareCoordinates = coordinates[0].compareTo(coordinates[1]);
-        if (compareCoordinates < 0) {
-            firstCoordinateX = coordinates[0].substring(0, 1);
-            firstCoordinateY = coordinates[0].substring(1);
-            endCoordinateX = coordinates[1].substring(0, 1);
-            endCoordinateY = coordinates[1].substring(1);
+        if (coordinates.length == 0 || coordinates.length > 2) {
+            System.out.println("Error: wrong coordinates.");
+        // 1 cell ship
         } else {
-            firstCoordinateX = coordinates[1].substring(0, 1);
-            firstCoordinateY = coordinates[1].substring(1);
-            endCoordinateX = coordinates[0].substring(0, 1);
-            endCoordinateY = coordinates[0].substring(1);
-        }
-
-        if (board.placeShip(firstCoordinateX, Integer.parseInt(firstCoordinateY), endCoordinateX, Integer.parseInt(endCoordinateY))) {
-            System.out.println();
-
-            // display length boat
-            int shipLength;
-            // axis x
-            if (firstCoordinateX.equals(endCoordinateX)) {
-                shipLength = Integer.parseInt(endCoordinateY) - Integer.parseInt(firstCoordinateY);
-            // axis y
+            if (coordinates.length == 1) {
+                firstCoordinateX = coordinates[0].substring(0, 1);
+                firstCoordinateY = coordinates[0].substring(1);
+                endCoordinateX = firstCoordinateX;
+                endCoordinateY = firstCoordinateY;
             } else {
-                shipLength = board.translateAlphabetToInt(endCoordinateX) - board.translateAlphabetToInt(firstCoordinateX);
+                int compareCoordinates = coordinates[0].compareTo(coordinates[1]);
+                if (compareCoordinates < 0) {
+                    firstCoordinateX = coordinates[0].substring(0, 1);
+                    firstCoordinateY = coordinates[0].substring(1);
+                    endCoordinateX = coordinates[1].substring(0, 1);
+                    endCoordinateY = coordinates[1].substring(1);
+                } else {
+                    firstCoordinateX = coordinates[1].substring(0, 1);
+                    firstCoordinateY = coordinates[1].substring(1);
+                    endCoordinateX = coordinates[0].substring(0, 1);
+                    endCoordinateY = coordinates[0].substring(1);
+                }
             }
-            System.out.println("Length: " + (shipLength + 1));
 
-            // displaying parts
-            System.out.print("Parts: ");
-            for (String coordinate : coordinates) {
-                System.out.print(coordinate + " ");
+            if (board.placeShip(firstCoordinateX, Integer.parseInt(firstCoordinateY), endCoordinateX, Integer.parseInt(endCoordinateY))) {
+                int shipLength;
+                // axis x
+                if (firstCoordinateX.equals(endCoordinateX)) {
+                    shipLength = Integer.parseInt(endCoordinateY) - Integer.parseInt(firstCoordinateY);
+                    // axis y
+                } else {
+                    shipLength = board.translateAlphabetToInt(endCoordinateX) - board.translateAlphabetToInt(firstCoordinateX);
+                }
+                displayInfo(coordinates, board, shipLength);
             }
-
-            // displaying actual board
-            System.out.println();
-            System.out.println();
-            board.displayBoard();
         }
     }
+
+    public static void displayInfo(String[] coordinates, Board board, int shipLength) {
+        System.out.println();
+
+        System.out.println("Length: " + (shipLength + 1));
+
+        // displaying parts
+        System.out.print("Parts: ");
+        for (String coordinate : coordinates) {
+            System.out.print(coordinate + " ");
+        }
+
+        // displaying actual board
+        System.out.println();
+        System.out.println();
+        board.displayBoard();
+    }
+
 }
