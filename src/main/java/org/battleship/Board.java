@@ -41,48 +41,87 @@ public class Board {
         grid[row][column] = status;
     }
 
-    public boolean placeShip(String startRow, int startCol, String endRow, int endCol) {
-        int boatLength = 0;
+    public boolean placeShip(int startRow, int startCol, int endRow, int endCol, int shipTypeLength) {
+        int boatLength;
 
-        if (!Objects.equals(startRow, endRow) && startCol != endCol) {
-            System.out.println("Error: Ship must be placed on x or y axis or coordinates are out of board.");
-            return false;
-        } else {
-            // x or y
-            // x
-            if (Objects.equals(startRow, endRow)) {
-                // length of ship
-                boatLength = endCol - startCol;
-
-                if (boatLength > 3) {
-                    System.out.println("Error: Ship can't be bigger than 4 fields.");
-                    return false;
-                } else {
-                    // Generate ship axis x
-                    for (int i = startCol - 1; i < endCol; i++) {
-                        this.setGrid(this.translateAlphabetToInt(startRow), i , CellStatus.SHIP);
-                    }
-
-                }
-            // y
+        if (!isPlacedTooClose(startRow, startCol) && !isPlacedTooClose(endRow, endCol)) {
+            if (!Objects.equals(startRow, endRow) && startCol != endCol) {
+                System.out.println("Error: Ship must be placed on x or y axis or coordinates are out of board.");
+                return false;
             } else {
-                boatLength = this.translateAlphabetToInt(endRow) - this.translateAlphabetToInt(startRow);
-                if (boatLength > 3) {
-                    System.out.println("Error: Ship can't be bigger than 4 fields.");
-                    return false;
+                // x or y
+                // x
+                if (Objects.equals(startRow, endRow)) {
+                    // length of ship
+                    boatLength = endCol - startCol + 1;
+
+                    for (int i = startCol; i <= endCol; i++) {
+                        if (isPlacedTooClose(startRow, i)) {
+                            System.out.println("Error: Ship must be placed on free cells");
+                            return false;
+                        }
+                    }
+                    if (boatLength != shipTypeLength) {
+                        System.out.println("Error: Ship can't be bigger than " + shipTypeLength + " cells.");
+                        return false;
+                    } else {
+                        // Generate ship axis x
+                        for (int i = startCol; i <= endCol; i++) {
+                            this.setGrid(startRow, i, CellStatus.SHIP);
+                        }
+                    }
+                    // y
                 } else {
-                    // Generate ship axis y
-                    for (int i = this.translateAlphabetToInt(startRow); i <= this.translateAlphabetToInt(endRow); i++) {
-                        this.setGrid(i, startCol - 1, CellStatus.SHIP);
+                    // length of ship
+                    boatLength = endRow - startRow + 1;
+
+                    for (int i = startRow; i <= endRow; i++) {
+                        if (isPlacedTooClose(i, startCol)) {
+                            System.out.println("Error: Ship must be placed on free cells");
+                            return false;
+                        }
+                    }
+
+                    if (boatLength != shipTypeLength) {
+                        System.out.println("Error: Ship can't be bigger than " + shipTypeLength + " cells.");
+                        return false;
+                    } else {
+                        // Generate ship axis y
+                        for (int i = startRow; i <= endRow; i++) {
+                            this.setGrid(i, startCol, CellStatus.SHIP);
+                        }
                     }
                 }
+
             }
+            return true;
+        } else {
+            System.out.println();
+            System.out.println("Error! You placed it too close to another one. Try again:");
+            System.out.println();
+            return false;
         }
-        return true;
     }
 
     // translate char to index of column
     public int translateAlphabetToInt(String x) {
         return x.charAt(0) - 'A';
+    }
+
+    // checking if ship is too close to another ship
+    private boolean isPlacedTooClose(int row, int col) {
+        int iStart = Math.max(0, row - 1);
+        int iEnd = Math.min(9, row + 1);
+        int jStart = Math.max(0, col - 1);
+        int jEnd = Math.min(9, col + 1);
+
+        for (int i = iStart; i <= iEnd; i++) {
+            for (int j = jStart; j <= jEnd; j++) {
+                if (grid[i][j] == CellStatus.SHIP) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

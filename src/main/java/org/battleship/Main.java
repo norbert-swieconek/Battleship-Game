@@ -6,60 +6,57 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         Board board = new Board();
-        board.displayBoard();
 
-        // switch (isOn)
-        // for
+        for (ShipType shipType : ShipType.values()) {
+            boolean isValid = false;
+            while (!isValid) {
+                int shipTypeLength = shipType.getLength();
+                board.displayBoard();
+                System.out.println();
+                System.out.println("Enter the coordinates of the " + shipType.getName() + " (" + shipType.getLength() + " cells):");
 
+                // x1, x2
+                String[] coordinates = sc.nextLine().toUpperCase().split(" ");
+                int startRow;
+                int startCol;
+                int endRow;
+                int endCol;
 
-        // TODO what if input is: asgsagsaf for example?
-        System.out.println("Enter the coordinates of the ship:");
-        // x1, x2
-        String[] coordinates = sc.nextLine().toUpperCase().split(" ");
-        String firstCoordinateX;
-        String firstCoordinateY;
-        String endCoordinateX;
-        String endCoordinateY;
-
-        if (coordinates.length == 0 || coordinates.length > 2) {
-            System.out.println("Error: wrong coordinates.");
-        // 1 cell ship
-        } else {
-            if (coordinates.length == 1) {
-                firstCoordinateX = coordinates[0].substring(0, 1);
-                firstCoordinateY = coordinates[0].substring(1);
-                endCoordinateX = firstCoordinateX;
-                endCoordinateY = firstCoordinateY;
-            } else {
-                int compareCoordinates = coordinates[0].compareTo(coordinates[1]);
-                if (compareCoordinates < 0) {
-                    firstCoordinateX = coordinates[0].substring(0, 1);
-                    firstCoordinateY = coordinates[0].substring(1);
-                    endCoordinateX = coordinates[1].substring(0, 1);
-                    endCoordinateY = coordinates[1].substring(1);
+                if (coordinates.length != 2) {
+                    System.out.println();
+                    System.out.println("Error: wrong coordinates.");
+                    System.out.println();
                 } else {
-                    firstCoordinateX = coordinates[1].substring(0, 1);
-                    firstCoordinateY = coordinates[1].substring(1);
-                    endCoordinateX = coordinates[0].substring(0, 1);
-                    endCoordinateY = coordinates[0].substring(1);
-                }
-            }
+                    int r1 = board.translateAlphabetToInt(coordinates[0].substring(0,1));
+                    int c1 = Integer.parseInt(coordinates[0].substring(1)) - 1;
 
-            if (board.placeShip(firstCoordinateX, Integer.parseInt(firstCoordinateY), endCoordinateX, Integer.parseInt(endCoordinateY))) {
-                int shipLength;
-                // axis x
-                if (firstCoordinateX.equals(endCoordinateX)) {
-                    shipLength = Integer.parseInt(endCoordinateY) - Integer.parseInt(firstCoordinateY);
-                    // axis y
-                } else {
-                    shipLength = board.translateAlphabetToInt(endCoordinateX) - board.translateAlphabetToInt(firstCoordinateX);
+                    int r2 = board.translateAlphabetToInt(coordinates[1].substring(0,1));
+                    int c2 = Integer.parseInt(coordinates[1].substring(1)) - 1;
+
+                    startRow = Math.min(r1, r2);
+                    endRow = Math.max(r1, r2);
+                    startCol = Math.min(c1, c2);
+                    endCol = Math.max(c1, c2);
+
+                    if (board.placeShip(startRow, startCol, endRow, endCol, shipTypeLength)) {
+                        int shipLength;
+                        // axis x
+                        if (startRow == endRow) {
+                            shipLength = endCol - startCol;
+                            // axis y
+                        } else {
+                            shipLength = endRow - startRow;
+                        }
+                        displayInfo(coordinates, shipLength);
+                        isValid = true;
+                    }
                 }
-                displayInfo(coordinates, board, shipLength);
             }
         }
+        board.displayBoard();
     }
 
-    public static void displayInfo(String[] coordinates, Board board, int shipLength) {
+    public static void displayInfo(String[] coordinates, int shipLength) {
         System.out.println();
 
         System.out.println("Length: " + (shipLength + 1));
@@ -73,7 +70,6 @@ public class Main {
         // displaying actual board
         System.out.println();
         System.out.println();
-        board.displayBoard();
     }
 
 }
