@@ -11,7 +11,7 @@ public class Main {
             boolean isValid = false;
             while (!isValid) {
                 int shipTypeLength = shipType.getLength();
-                board.displayBoard();
+                board.displayMainBoard(false);
                 System.out.println();
                 System.out.println("Enter the coordinates of the " + shipType.getName() + " (" + shipType.getLength() + " cells):");
 
@@ -63,7 +63,7 @@ public class Main {
         System.out.println("The game starts!");
         System.out.println();
 
-        board.displayBoard();
+        board.displayMainBoard(true);
         System.out.println();
         System.out.println("Take a shot!");
         System.out.println();
@@ -77,7 +77,7 @@ public class Main {
                 System.out.println();
                 board.shoot(row, col);
                 System.out.println();
-                board.displayBoard();
+                board.displayMainBoard(true);
         } else {
             System.out.println();
             System.out.println("Error: wrong coordinates.");

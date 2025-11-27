@@ -16,7 +16,7 @@ public class Board {
     }
 
     // displaying full board on console
-    public void displayBoard() {
+    public void displayMainBoard(boolean hideShips) {
         // printing number of column from 1 to 10
         System.out.print("  ");
         for (int i = 0; i < BOARD_SIZE; i++) {
@@ -29,12 +29,25 @@ public class Board {
         for (CellStatus[] row : grid) {
             System.out.print(letter + " ");
             letter++;
-            for (CellStatus cell : row) {
-                System.out.print(cell.getCellStatus() + " ");
+
+            if (!hideShips) {
+                for (CellStatus cell : row) {
+                    System.out.print(cell.getCellStatus() + " ");
+                }
+            } else {
+                for (CellStatus cell : row) {
+                    if (cell == CellStatus.SHIP) {
+                        System.out.print("~" + " ");
+                    } else {
+                        System.out.print(cell.getCellStatus() + " ");
+                    }
+                }
             }
             System.out.println();
         }
     }
+
+
 
     // setting ship
     public void setGrid(int row, int column, CellStatus status) {
