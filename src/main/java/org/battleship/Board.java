@@ -46,7 +46,8 @@ public class Board {
 
         if (!isPlacedTooClose(startRow, startCol) && !isPlacedTooClose(endRow, endCol)) {
             if (!Objects.equals(startRow, endRow) && startCol != endCol) {
-                System.out.println("Error: Ship must be placed on x or y axis or coordinates are out of board.");
+                System.out.println("Error! Wrong ship location! Try again:");
+                System.out.println();
                 return false;
             } else {
                 // x or y
@@ -62,7 +63,7 @@ public class Board {
                         }
                     }
                     if (boatLength != shipTypeLength) {
-                        System.out.println("Error: Ship can't be bigger than " + shipTypeLength + " cells.");
+                        System.out.println("Error: Ship can't be bigger or smaller than " + shipTypeLength + " cells.");
                         return false;
                     } else {
                         // Generate ship axis x
@@ -92,7 +93,6 @@ public class Board {
                         }
                     }
                 }
-
             }
             return true;
         } else {
@@ -106,6 +106,21 @@ public class Board {
     // translate char to index of column
     public int translateAlphabetToInt(String x) {
         return x.charAt(0) - 'A';
+    }
+
+    public boolean shoot(int row, int col) {
+        if (grid[row][col] == CellStatus.SHIP) {
+            System.out.println("You hit a ship!");
+            grid[row][col] = CellStatus.HIT;
+            return true;
+        } else if (grid[row][col] == CellStatus.FOG) {
+            System.out.println("You missed!");
+            grid[row][col] = CellStatus.MISS;
+            return false;
+        } else {
+            System.out.println("You've already fired at this cell!");
+            return false;
+        }
     }
 
     // checking if ship is too close to another ship
