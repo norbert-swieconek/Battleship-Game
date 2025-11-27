@@ -4,8 +4,10 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public class Board {
-    private CellStatus[][] grid;
+    private final CellStatus[][] grid;
     private final int BOARD_SIZE = 10;
+    private static int allShipCells = 0;
+    private static int sankCells = 0;
 
     // filling grid with '~' chars
     public Board () {
@@ -47,8 +49,6 @@ public class Board {
         }
     }
 
-
-
     // setting ship
     public void setGrid(int row, int column, CellStatus status) {
         grid[row][column] = status;
@@ -77,13 +77,16 @@ public class Board {
                     }
                     if (boatLength != shipTypeLength) {
                         System.out.println("Error: Ship can't be bigger or smaller than " + shipTypeLength + " cells.");
+                        System.out.println();
                         return false;
                     } else {
                         // Generate ship axis x
                         for (int i = startCol; i <= endCol; i++) {
                             this.setGrid(startRow, i, CellStatus.SHIP);
                         }
+                        allShipCells += boatLength;
                     }
+
                     // y
                 } else {
                     // length of ship
@@ -98,12 +101,14 @@ public class Board {
 
                     if (boatLength != shipTypeLength) {
                         System.out.println("Error: Ship can't be bigger than " + shipTypeLength + " cells.");
+                        System.out.println();
                         return false;
                     } else {
                         // Generate ship axis y
                         for (int i = startRow; i <= endRow; i++) {
                             this.setGrid(i, startCol, CellStatus.SHIP);
                         }
+                        allShipCells += boatLength;
                     }
                 }
             }
@@ -121,18 +126,21 @@ public class Board {
         return x.charAt(0) - 'A';
     }
 
-    public boolean shoot(int row, int col) {
+    public void shoot(int row, int col) {
         if (grid[row][col] == CellStatus.SHIP) {
             System.out.println("You hit a ship!");
+            System.out.println();
             grid[row][col] = CellStatus.HIT;
-            return true;
+            sankCells++;
+            // checking if ship is sank
+            if (!isPlacedTooClose(row, col)) {
+                System.out.println("You sank a ship! Specify a new target:");
+            }
         } else if (grid[row][col] == CellStatus.FOG) {
             System.out.println("You missed!");
             grid[row][col] = CellStatus.MISS;
-            return false;
         } else {
             System.out.println("You've already fired at this cell!");
-            return false;
         }
     }
 
@@ -151,5 +159,13 @@ public class Board {
             }
         }
         return false;
+    }
+
+    public int getAllShipCells() {
+        return allShipCells;
+    }
+
+    public int getSankCells() {
+        return sankCells;
     }
 }

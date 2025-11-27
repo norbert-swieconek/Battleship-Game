@@ -67,22 +67,32 @@ public class Main {
         System.out.println();
         System.out.println("Take a shot!");
         System.out.println();
+        boolean isPlay = true;
 
-        String coordinatesShoot = sc.nextLine().toUpperCase();
-
-
-        if (coordinatesShoot.matches("^[A-J](10|[1-9])$")) {
+        while(isPlay) {
+            String coordinatesShoot = sc.nextLine().toUpperCase();
+            if (coordinatesShoot.matches("^[A-J](10|[1-9])$")) {
                 int row = board.translateAlphabetToInt(coordinatesShoot.substring(0, 1));
                 int col = Integer.parseInt(coordinatesShoot.substring(1)) - 1;
                 System.out.println();
                 board.shoot(row, col);
                 System.out.println();
                 board.displayMainBoard(true);
-        } else {
-            System.out.println();
-            System.out.println("Error: wrong coordinates.");
-            System.out.println();
+            } else {
+                System.out.println();
+                System.out.println("Error: wrong coordinates.");
+                System.out.println();
+            }
+
+            if (board.getSankCells() == board.getAllShipCells()) {
+                board.displayMainBoard(false);
+                System.out.println();
+                System.out.println("You sank the last ship. You won. Congratulations!");
+                isPlay = false;
+            }
         }
+
+
     }
 
     public static void displayInfo(String[] coordinates, int shipLength) {
