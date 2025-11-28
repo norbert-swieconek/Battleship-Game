@@ -6,8 +6,8 @@ import java.util.Objects;
 public class Board {
     private final CellStatus[][] grid;
     private final int BOARD_SIZE = 10;
-    private static int allShipCells = 0;
-    private static int sankCells = 0;
+    private int allShipCells = 0;
+    private int sankCells = 0;
 
     // filling grid with '~' chars
     public Board () {
@@ -86,7 +86,6 @@ public class Board {
                         }
                         allShipCells += boatLength;
                     }
-
                     // y
                 } else {
                     // length of ship
@@ -126,21 +125,23 @@ public class Board {
         return x.charAt(0) - 'A';
     }
 
-    public void shoot(int row, int col) {
+    public boolean shoot(int row, int col) {
         if (grid[row][col] == CellStatus.SHIP) {
             System.out.println("You hit a ship!");
-            System.out.println();
             grid[row][col] = CellStatus.HIT;
             sankCells++;
             // checking if ship is sank
-            if (!isPlacedTooClose(row, col)) {
+            if (!isPlacedTooClose(row, col) && this.getSankCells() != this.getAllShipCells()) {
                 System.out.println("You sank a ship! Specify a new target:");
             }
+            return true;
         } else if (grid[row][col] == CellStatus.FOG) {
             System.out.println("You missed!");
             grid[row][col] = CellStatus.MISS;
+            return false;
         } else {
             System.out.println("You've already fired at this cell!");
+            return false;
         }
     }
 

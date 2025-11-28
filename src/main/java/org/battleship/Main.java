@@ -6,12 +6,131 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         Board board = new Board();
+        Player player1 = new Player();
+        Player player2 = new Player();
 
+
+        System.out.println("Player 1, place your ships on the game field");
+        System.out.println();
+        setGame(sc, player1.getBoard());
+        System.out.println("Pass the move to another player. Player 2, place your ships to the game field. Press enter to start.");
+        sc.nextLine();
+        System.out.println("...");
+        System.out.println();
+        System.out.println("Player 2, place your ships to the game field");
+        System.out.println();
+//        Player player2 = new Player(setGame(sc));
+        setGame(sc, player2.getBoard());
+
+        System.out.println();
+        System.out.println("Pass the move to another player. Player 1 round. Press enter to start.");
+        sc.nextLine();
+        System.out.println("...");
+        System.out.println();
+        System.out.println("The game starts!");
+        System.out.println();
+
+        boolean isTurnPlayer1 = true;
+        boolean isTurnPlayer2 = false;
+        int whosTurn = 1;
+
+        while (true) {
+            switch (whosTurn) {
+                case 1 -> {
+                    while (isTurnPlayer1) {
+                        boolean doHit = true;
+                        while (doHit) {
+                            player2.getBoard().displayMainBoard(true);
+                            System.out.println("---------------------");
+                            player1.getBoard().displayMainBoard(false);
+                            System.out.println();
+                            System.out.println("Player 1, it's your turn. Shoot:");
+                            String coordinatesShoot = sc.nextLine().toUpperCase();
+                            if (coordinatesShoot.matches("^[A-J](10|[1-9])$")) {
+                                int row = board.translateAlphabetToInt(coordinatesShoot.substring(0, 1));
+                                int col = Integer.parseInt(coordinatesShoot.substring(1)) - 1;
+                                System.out.println();
+                                doHit = player2.getBoard().shoot(row, col);
+                                System.out.println();
+                            } else {
+                                System.out.println();
+                                System.out.println("Error: wrong coordinates.");
+                                System.out.println();
+                            }
+                            if (player2.getBoard().getSankCells() == player2.getBoard().getAllShipCells()) {
+                                player2.getBoard().displayMainBoard(false);
+                                System.out.println("---------------------");
+                                player1.getBoard().displayMainBoard(false);
+                                System.out.println();
+                                System.out.println("You sank the last ship. You won Player 1. Congratulations!");
+                                return;
+                            }
+                        }
+                        System.out.println("Pass the move to another player. Player 2 round. Press enter to start.");
+                        sc.nextLine();
+                        System.out.println("...");
+                        System.out.println();
+
+                        whosTurn = 2;
+                        isTurnPlayer1 = false;
+                        isTurnPlayer2 = true;
+                    }
+                }
+                case 2 -> {
+                    while (isTurnPlayer2) {
+                        boolean doHit = true;
+
+                        while (doHit) {
+                            player1.getBoard().displayMainBoard(true);
+                            System.out.println("---------------------");
+                            player2.getBoard().displayMainBoard(false);
+                            System.out.println();
+                            System.out.println("Player 2, it's your turn. Shoot:");
+                            String coordinatesShoot = sc.nextLine().toUpperCase();
+                            if (coordinatesShoot.matches("^[A-J](10|[1-9])$")) {
+                                int row = board.translateAlphabetToInt(coordinatesShoot.substring(0, 1));
+                                int col = Integer.parseInt(coordinatesShoot.substring(1)) - 1;
+                                System.out.println();
+                                doHit = player1.getBoard().shoot(row, col);
+                                System.out.println();
+                            } else {
+                                System.out.println();
+                                System.out.println("Error: wrong coordinates.");
+                                System.out.println();
+                            }
+
+                        }
+
+                        if (player1.getBoard().getSankCells() == player1.getBoard().getAllShipCells()) {
+                            player1.getBoard().displayMainBoard(false);
+                            System.out.println("---------------------");
+                            player2.getBoard().displayMainBoard(false);
+                            System.out.println();
+                            System.out.println("You sank the last ship. You won Player 2. Congratulations!");
+                            return;
+                        }
+
+                        System.out.println("Pass the move to another player. Player 1 round. Press enter to start.");
+                        sc.nextLine();
+                        System.out.println("...");
+                        System.out.println();
+
+                        whosTurn = 1;
+                        isTurnPlayer2 = false;
+                        isTurnPlayer1 = true;
+                    }
+                }
+            }
+        }
+    }
+
+
+    public static void setGame(Scanner sc, Board playerGrid) {
         for (ShipType shipType : ShipType.values()) {
             boolean isValid = false;
             while (!isValid) {
                 int shipTypeLength = shipType.getLength();
-                board.displayMainBoard(false);
+                playerGrid.displayMainBoard(false);
                 System.out.println();
                 System.out.println("Enter the coordinates of the " + shipType.getName() + " (" + shipType.getLength() + " cells):");
 
@@ -32,10 +151,10 @@ public class Main {
                         System.out.println("Error: wrong coordinates.");
                         System.out.println();
                     } else {
-                        int r1 = board.translateAlphabetToInt(coordinates[0].substring(0,1));
+                        int r1 = playerGrid.translateAlphabetToInt(coordinates[0].substring(0,1));
                         int c1 = Integer.parseInt(coordinates[0].substring(1)) - 1;
 
-                        int r2 = board.translateAlphabetToInt(coordinates[1].substring(0,1));
+                        int r2 = playerGrid.translateAlphabetToInt(coordinates[1].substring(0,1));
                         int c2 = Integer.parseInt(coordinates[1].substring(1)) - 1;
 
                         startRow = Math.min(r1, r2);
@@ -43,7 +162,7 @@ public class Main {
                         startCol = Math.min(c1, c2);
                         endCol = Math.max(c1, c2);
 
-                        if (board.placeShip(startRow, startCol, endRow, endCol, shipTypeLength)) {
+                        if (playerGrid.placeShip(startRow, startCol, endRow, endCol, shipTypeLength)) {
                             int shipLength;
                             // axis x
                             if (startRow == endRow) {
@@ -59,40 +178,6 @@ public class Main {
                 }
             }
         }
-
-        System.out.println("The game starts!");
-        System.out.println();
-
-        board.displayMainBoard(true);
-        System.out.println();
-        System.out.println("Take a shot!");
-        System.out.println();
-        boolean isPlay = true;
-
-        while(isPlay) {
-            String coordinatesShoot = sc.nextLine().toUpperCase();
-            if (coordinatesShoot.matches("^[A-J](10|[1-9])$")) {
-                int row = board.translateAlphabetToInt(coordinatesShoot.substring(0, 1));
-                int col = Integer.parseInt(coordinatesShoot.substring(1)) - 1;
-                System.out.println();
-                board.shoot(row, col);
-                System.out.println();
-                board.displayMainBoard(true);
-            } else {
-                System.out.println();
-                System.out.println("Error: wrong coordinates.");
-                System.out.println();
-            }
-
-            if (board.getSankCells() == board.getAllShipCells()) {
-                board.displayMainBoard(false);
-                System.out.println();
-                System.out.println("You sank the last ship. You won. Congratulations!");
-                isPlay = false;
-            }
-        }
-
-
     }
 
     public static void displayInfo(String[] coordinates, int shipLength) {
